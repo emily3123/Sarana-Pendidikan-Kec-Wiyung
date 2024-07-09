@@ -1,0 +1,817 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="initial-scale=1,user-scalable=no,maximum-scale=1,width=device-width">
+        <meta name="mobile-web-app-capable" content="yes">
+        <meta name="apple-mobile-web-app-capable" content="yes">
+        <link rel="stylesheet" href="css/leaflet.css">
+        <link rel="stylesheet" href="css/L.Control.Layers.Tree.css">
+        <link rel="stylesheet" href="css/L.Control.Locate.min.css">
+        <link rel="stylesheet" href="css/qgis2web.css">
+        <link rel="stylesheet" href="css/fontawesome-all.min.css">
+        <link rel="stylesheet" href="css/leaflet-control-geocoder.Geocoder.css">
+        <style>
+        html, body, #map {
+            width: 100%;
+            height: 100%;
+            padding: 0;
+            margin: 0;
+        }
+        </style>
+        <title>WebGIS Sarana Pendidikan Kecamatan Wiyung</title>
+    </head>
+    <body>
+        <div id="map">
+        </div>
+        <script src="js/qgis2web_expressions.js"></script>
+        <script src="js/leaflet.js"></script>
+        <script src="js/L.Control.Layers.Tree.min.js"></script>
+        <script src="js/L.Control.Locate.min.js"></script>
+        <script src="js/leaflet.rotatedMarker.js"></script>
+        <script src="js/leaflet.pattern.js"></script>
+        <script src="js/leaflet-hash.js"></script>
+        <script src="js/Autolinker.min.js"></script>
+        <script src="js/rbush.min.js"></script>
+        <script src="js/labelgun.min.js"></script>
+        <script src="js/labels.js"></script>
+        <script src="js/leaflet-control-geocoder.Geocoder.js"></script>
+        <script src="data/WIYUNG_CLIP_1.js"></script>
+        <script src="data/NAWiyungAdm_Desa_Wiyung_2.js"></script>
+        <script src="data/Jangkauan_3.js"></script>
+        <script src="data/NAWiyungJalan_Wiyung_4.js"></script>
+        <script src="data/NAWiyungPendidikan_5.js"></script>
+        <script>
+        var map = L.map('map', {
+            zoomControl:false, maxZoom:28, minZoom:1
+        })
+        var hash = new L.Hash(map);
+        map.attributionControl.setPrefix('<a href="https://github.com/tomchadwin/qgis2web" target="_blank">qgis2web</a> &middot; <a href="https://leafletjs.com" title="A JS library for interactive maps">Leaflet</a> &middot; <a href="https://qgis.org">QGIS</a>');
+        var autolinker = new Autolinker({truncate: {length: 30, location: 'smart'}});
+        // remove popup's row if "visible-with-data"
+        function removeEmptyRowsFromPopupContent(content, feature) {
+         var tempDiv = document.createElement('div');
+         tempDiv.innerHTML = content;
+         var rows = tempDiv.querySelectorAll('tr');
+         for (var i = 0; i < rows.length; i++) {
+             var td = rows[i].querySelector('td.visible-with-data');
+             var key = td ? td.id : '';
+             if (td && td.classList.contains('visible-with-data') && feature.properties[key] == null) {
+                 rows[i].parentNode.removeChild(rows[i]);
+             }
+         }
+         return tempDiv.innerHTML;
+        }
+        // add class to format popup if it contains media
+		function addClassToPopupIfMedia(content, popup) {
+			var tempDiv = document.createElement('div');
+			tempDiv.innerHTML = content;
+			if (tempDiv.querySelector('td img')) {
+				popup._contentNode.classList.add('media');
+					// Delay to force the redraw
+					setTimeout(function() {
+						popup.update();
+					}, 10);
+			} else {
+				popup._contentNode.classList.remove('media');
+			}
+		}
+        var zoomControl = L.control.zoom({
+            position: 'topleft'
+        }).addTo(map);
+        L.control.locate({locateOptions: {maxZoom: 19}}).addTo(map);
+        var bounds_group = new L.featureGroup([]);
+        function setBounds() {
+            if (bounds_group.getLayers().length) {
+                map.fitBounds(bounds_group.getBounds());
+            }
+        }
+        map.createPane('pane_OpenStreetMap_0');
+        map.getPane('pane_OpenStreetMap_0').style.zIndex = 400;
+        var layer_OpenStreetMap_0 = L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            pane: 'pane_OpenStreetMap_0',
+            opacity: 1.0,
+            attribution: '',
+            minZoom: 1,
+            maxZoom: 28,
+            minNativeZoom: 0,
+            maxNativeZoom: 19
+        });
+        layer_OpenStreetMap_0;
+        map.addLayer(layer_OpenStreetMap_0);
+        function pop_WIYUNG_CLIP_1(feature, layer) {
+            var popupContent = '<table>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_WIYUNG_CLIP_1_0() {
+            return {
+                pane: 'pane_WIYUNG_CLIP_1',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(183,72,75,1.0)',
+                interactive: true,
+            }
+        }
+        map.createPane('pane_WIYUNG_CLIP_1');
+        map.getPane('pane_WIYUNG_CLIP_1').style.zIndex = 401;
+        map.getPane('pane_WIYUNG_CLIP_1').style['mix-blend-mode'] = 'normal';
+        var layer_WIYUNG_CLIP_1 = new L.geoJson(json_WIYUNG_CLIP_1, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_WIYUNG_CLIP_1',
+            layerName: 'layer_WIYUNG_CLIP_1',
+            pane: 'pane_WIYUNG_CLIP_1',
+            onEachFeature: pop_WIYUNG_CLIP_1,
+            style: style_WIYUNG_CLIP_1_0,
+        });
+        bounds_group.addLayer(layer_WIYUNG_CLIP_1);
+        map.addLayer(layer_WIYUNG_CLIP_1);
+        function pop_NAWiyungAdm_Desa_Wiyung_2(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">NAMOBJ</th>\
+                        <td>' + (feature.properties['NAMOBJ'] !== null ? autolinker.link(feature.properties['NAMOBJ'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_NAWiyungAdm_Desa_Wiyung_2_0(feature) {
+            switch(String(feature.properties['NAMOBJ'])) {
+                case 'KEL. BABATAN':
+                    return {
+                pane: 'pane_NAWiyungAdm_Desa_Wiyung_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(202,59,234,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'KEL. BALASKLUMPRIK':
+                    return {
+                pane: 'pane_NAWiyungAdm_Desa_Wiyung_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(195,234,56,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'KEL. JAJARTUNGGAL':
+                    return {
+                pane: 'pane_NAWiyungAdm_Desa_Wiyung_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(56,231,132,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'KEL. WIYUNG':
+                    return {
+                pane: 'pane_NAWiyungAdm_Desa_Wiyung_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(19,98,236,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_NAWiyungAdm_Desa_Wiyung_2',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(231,137,135,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NAWiyungAdm_Desa_Wiyung_2');
+        map.getPane('pane_NAWiyungAdm_Desa_Wiyung_2').style.zIndex = 402;
+        map.getPane('pane_NAWiyungAdm_Desa_Wiyung_2').style['mix-blend-mode'] = 'normal';
+        var layer_NAWiyungAdm_Desa_Wiyung_2 = new L.geoJson(json_NAWiyungAdm_Desa_Wiyung_2, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NAWiyungAdm_Desa_Wiyung_2',
+            layerName: 'layer_NAWiyungAdm_Desa_Wiyung_2',
+            pane: 'pane_NAWiyungAdm_Desa_Wiyung_2',
+            onEachFeature: pop_NAWiyungAdm_Desa_Wiyung_2,
+            style: style_NAWiyungAdm_Desa_Wiyung_2_0,
+        });
+        bounds_group.addLayer(layer_NAWiyungAdm_Desa_Wiyung_2);
+        map.addLayer(layer_NAWiyungAdm_Desa_Wiyung_2);
+        function pop_Jangkauan_3(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">Name</th>\
+                        <td>' + (feature.properties['Name'] !== null ? autolinker.link(feature.properties['Name'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_Jangkauan_3_0(feature) {
+            switch(String(feature.properties['Name'])) {
+                case 'Location 1 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(210,19,156,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 1 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(78,169,205,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 2 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(161,99,228,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 2 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(99,237,108,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 3 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(29,214,189,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 3 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(216,19,82,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 4 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(200,122,49,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 4 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(101,233,35,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 5 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(222,82,69,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 5 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,207,76,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 6 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,84,229,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 6 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(163,201,69,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 7 : 0 - 1000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(119,148,211,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'Location 7 : 1000 - 3000':
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(31,229,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_Jangkauan_3',
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1.0, 
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(109,99,216,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_Jangkauan_3');
+        map.getPane('pane_Jangkauan_3').style.zIndex = 403;
+        map.getPane('pane_Jangkauan_3').style['mix-blend-mode'] = 'normal';
+        var layer_Jangkauan_3 = new L.geoJson(json_Jangkauan_3, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_Jangkauan_3',
+            layerName: 'layer_Jangkauan_3',
+            pane: 'pane_Jangkauan_3',
+            onEachFeature: pop_Jangkauan_3,
+            style: style_Jangkauan_3_0,
+        });
+        bounds_group.addLayer(layer_Jangkauan_3);
+        map.addLayer(layer_Jangkauan_3);
+        function pop_NAWiyungJalan_Wiyung_4(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">REMARK</th>\
+                        <td>' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_NAWiyungJalan_Wiyung_4_0(feature) {
+            switch(String(feature.properties['REMARK'])) {
+                case 'Jalan Arteri':
+                    return {
+                pane: 'pane_NAWiyungJalan_Wiyung_4',
+                opacity: 1,
+                color: 'rgba(201,58,163,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Jalan Kolektor':
+                    return {
+                pane: 'pane_NAWiyungJalan_Wiyung_4',
+                opacity: 1,
+                color: 'rgba(100,50,239,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Jalan Lain':
+                    return {
+                pane: 'pane_NAWiyungJalan_Wiyung_4',
+                opacity: 1,
+                color: 'rgba(216,88,42,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Jalan Lokal':
+                    return {
+                pane: 'pane_NAWiyungJalan_Wiyung_4',
+                opacity: 1,
+                color: 'rgba(80,213,116,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                case 'Jalan Setapak':
+                    return {
+                pane: 'pane_NAWiyungJalan_Wiyung_4',
+                opacity: 1,
+                color: 'rgba(179,224,54,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_NAWiyungJalan_Wiyung_4',
+                opacity: 1,
+                color: 'rgba(76,181,219,1.0)',
+                dashArray: '',
+                lineCap: 'square',
+                lineJoin: 'bevel',
+                weight: 1.0,
+                fillOpacity: 0,
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NAWiyungJalan_Wiyung_4');
+        map.getPane('pane_NAWiyungJalan_Wiyung_4').style.zIndex = 404;
+        map.getPane('pane_NAWiyungJalan_Wiyung_4').style['mix-blend-mode'] = 'normal';
+        var layer_NAWiyungJalan_Wiyung_4 = new L.geoJson(json_NAWiyungJalan_Wiyung_4, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NAWiyungJalan_Wiyung_4',
+            layerName: 'layer_NAWiyungJalan_Wiyung_4',
+            pane: 'pane_NAWiyungJalan_Wiyung_4',
+            onEachFeature: pop_NAWiyungJalan_Wiyung_4,
+            style: style_NAWiyungJalan_Wiyung_4_0,
+        });
+        bounds_group.addLayer(layer_NAWiyungJalan_Wiyung_4);
+        map.addLayer(layer_NAWiyungJalan_Wiyung_4);
+        function pop_NAWiyungPendidikan_5(feature, layer) {
+            var popupContent = '<table>\
+                    <tr>\
+                        <th scope="row">REMARK</th>\
+                        <td>' + (feature.properties['REMARK'] !== null ? autolinker.link(feature.properties['REMARK'].toLocaleString()) : '') + '</td>\
+                    </tr>\
+                    <tr>\
+                        <th scope="row">foto</th>\
+                        <td>' + (feature.properties['foto'] !== null ? '<img src="images/' + String(feature.properties['foto']).replace(/[\\\/:]/g, '_').trim() + '">' : '') + '</td>\
+                    </tr>\
+                </table>';
+            var content = removeEmptyRowsFromPopupContent(popupContent, feature);
+			layer.on('popupopen', function(e) {
+				addClassToPopupIfMedia(content, e.popup);
+			});
+			layer.bindPopup(content, { maxHeight: 400 });
+        }
+
+        function style_NAWiyungPendidikan_5_0(feature) {
+            switch(String(feature.properties['REMARK'])) {
+                case 'SDIT At Taqwa Surabaya':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(112,164,227,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SDN Wiyung':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(232,183,124,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SMA 9 Muhammadiyah Surabaya':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(171,200,104,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SMAN 22 Surabaya':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(212,66,97,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SMPN 34 Surabaya':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(90,227,200,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SMPN 51 Surabaya':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(224,45,218,1.0)',
+                interactive: true,
+            }
+                    break;
+                case 'SMPN 59 Surabaya':
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(106,205,111,1.0)',
+                interactive: true,
+            }
+                    break;
+                default:
+                    return {
+                pane: 'pane_NAWiyungPendidikan_5',
+                radius: 4.0,
+                opacity: 1,
+                color: 'rgba(35,35,35,1.0)',
+                dashArray: '',
+                lineCap: 'butt',
+                lineJoin: 'miter',
+                weight: 1,
+                fill: true,
+                fillOpacity: 1,
+                fillColor: 'rgba(124,89,206,1.0)',
+                interactive: true,
+            }
+                    break;
+            }
+        }
+        map.createPane('pane_NAWiyungPendidikan_5');
+        map.getPane('pane_NAWiyungPendidikan_5').style.zIndex = 405;
+        map.getPane('pane_NAWiyungPendidikan_5').style['mix-blend-mode'] = 'normal';
+        var layer_NAWiyungPendidikan_5 = new L.geoJson(json_NAWiyungPendidikan_5, {
+            attribution: '',
+            interactive: true,
+            dataVar: 'json_NAWiyungPendidikan_5',
+            layerName: 'layer_NAWiyungPendidikan_5',
+            pane: 'pane_NAWiyungPendidikan_5',
+            onEachFeature: pop_NAWiyungPendidikan_5,
+            pointToLayer: function (feature, latlng) {
+                var context = {
+                    feature: feature,
+                    variables: {}
+                };
+                return L.circleMarker(latlng, style_NAWiyungPendidikan_5_0(feature));
+            },
+        });
+        bounds_group.addLayer(layer_NAWiyungPendidikan_5);
+        map.addLayer(layer_NAWiyungPendidikan_5);
+        var osmGeocoder = new L.Control.Geocoder({
+            collapsed: true,
+            position: 'topleft',
+            text: 'Search',
+            title: 'Testing'
+        }).addTo(map);
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .className += ' fa fa-search';
+        document.getElementsByClassName('leaflet-control-geocoder-icon')[0]
+        .title += 'Search for a place';
+        var baseMaps = {};
+        var overlaysTree = [
+            {label: 'NA Wiyung — Pendidikan<br /><table><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SDITAtTaqwaSurabaya0.png" /></td><td>SDIT At Taqwa Surabaya</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SDNWiyung1.png" /></td><td>SDN Wiyung</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SMA9MuhammadiyahSurabaya2.png" /></td><td>SMA 9 Muhammadiyah Surabaya</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SMAN22Surabaya3.png" /></td><td>SMAN 22 Surabaya</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SMPN34Surabaya4.png" /></td><td>SMPN 34 Surabaya</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SMPN51Surabaya5.png" /></td><td>SMPN 51 Surabaya</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_SMPN59Surabaya6.png" /></td><td>SMPN 59 Surabaya</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungPendidikan_5_7.png" /></td><td></td></tr></table>', layer: layer_NAWiyungPendidikan_5},
+            {label: 'NA Wiyung — Jalan_Wiyung<br /><table><tr><td style="text-align: center;"><img src="legend/NAWiyungJalan_Wiyung_4_JalanArteri0.png" /></td><td>Jalan Arteri</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungJalan_Wiyung_4_JalanKolektor1.png" /></td><td>Jalan Kolektor</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungJalan_Wiyung_4_JalanLain2.png" /></td><td>Jalan Lain</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungJalan_Wiyung_4_JalanLokal3.png" /></td><td>Jalan Lokal</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungJalan_Wiyung_4_JalanSetapak4.png" /></td><td>Jalan Setapak</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungJalan_Wiyung_4_5.png" /></td><td></td></tr></table>', layer: layer_NAWiyungJalan_Wiyung_4},
+            {label: 'Jangkauan<br /><table><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location1010000.png" /></td><td>Location 1 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location1100030001.png" /></td><td>Location 1 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location2010002.png" /></td><td>Location 2 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location2100030003.png" /></td><td>Location 2 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location3010004.png" /></td><td>Location 3 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location3100030005.png" /></td><td>Location 3 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location4010006.png" /></td><td>Location 4 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location4100030007.png" /></td><td>Location 4 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location5010008.png" /></td><td>Location 5 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location5100030009.png" /></td><td>Location 5 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location60100010.png" /></td><td>Location 6 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location61000300011.png" /></td><td>Location 6 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location70100012.png" /></td><td>Location 7 : 0 - 1000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_Location71000300013.png" /></td><td>Location 7 : 1000 - 3000</td></tr><tr><td style="text-align: center;"><img src="legend/Jangkauan_3_14.png" /></td><td></td></tr></table>', layer: layer_Jangkauan_3},
+            {label: 'NA Wiyung — Adm_Desa_Wiyung<br /><table><tr><td style="text-align: center;"><img src="legend/NAWiyungAdm_Desa_Wiyung_2_KELBABATAN0.png" /></td><td>KEL. BABATAN</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungAdm_Desa_Wiyung_2_KELBALASKLUMPRIK1.png" /></td><td>KEL. BALASKLUMPRIK</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungAdm_Desa_Wiyung_2_KELJAJARTUNGGAL2.png" /></td><td>KEL. JAJARTUNGGAL</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungAdm_Desa_Wiyung_2_KELWIYUNG3.png" /></td><td>KEL. WIYUNG</td></tr><tr><td style="text-align: center;"><img src="legend/NAWiyungAdm_Desa_Wiyung_2_4.png" /></td><td></td></tr></table>', layer: layer_NAWiyungAdm_Desa_Wiyung_2},
+            {label: '<img src="legend/WIYUNG_CLIP_1.png" /> WIYUNG_CLIP', layer: layer_WIYUNG_CLIP_1},
+            {label: "OpenStreetMap", layer: layer_OpenStreetMap_0},]
+        var lay = L.control.layers.tree(null, overlaysTree,{
+            //namedToggle: true,
+            //selectorBack: false,
+            //closedSymbol: '&#8862; &#x1f5c0;',
+            //openedSymbol: '&#8863; &#x1f5c1;',
+            //collapseAll: 'Collapse all',
+            //expandAll: 'Expand all',
+            collapsed: false, 
+        });
+        lay.addTo(map);
+        setBounds();
+        </script>
+    </body>
+</html>
